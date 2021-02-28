@@ -1,0 +1,293 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer ViewLocalizer
+
+@model Album.Models.AlbumViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="mb-sm-4">@ViewLocalizer["Trips list"]</h2>
+
+<div class="row">
+    <div class="col-sm-10 offset-1">
+        <ul class="list-group">
+        </ul>
+    </div>
+</div>
+
+<script>
+    function removeTrip(removeId) {
+        $.ajax({
+            url: '@Url.Action("RemoveTrip", "Album")',
+            type: "POST",
+            data: { removeId: removeId },
+            success: getTrips
+        });
+    }
+
+    function addTrip(name, start, end, place) {
+         $.ajax({
+            url: '@Url.Action("AddTrip", "Album")',
+            type: "POST",
+            data: { Name: name, Start: start, End: end, Place: place },
+             success: getTrips,
+             error: function () {
+                 $(".error-item").removeClass("d-none");
+             }
+        });
+    }
+
+    function saveTrip(id, name, start, end, place) {
+         $.ajax({
+            url: '@Url.Action("EditTrip", "Album")',
+            type: "POST",
+            data: { Id: id, Name: name, Start: start, End: end, Place: place },
+             success: getTrips,
+             error: function () {
+                 $(".error-edit-item").removeClass("d-none");
+             }
+        });
+    }
+
+    function editTrip(id) {
+        var row = $("#row_" + id);
+        row.children().addClass("d-none");
+
+        var d1Add = document.createElement("div");
+        d1Add.classList = ["col-sm-2"];
+        var inpAdd1 = document.createElement("input");
+        inpAdd1.id = "nameEdit";
+        inpAdd1.classList = ["form-control"];
+        inpAdd1.value = row.find(".col-name").text();
+        var d2Add = document.createElement("div");
+        d2Add.classList = ["col-sm-3"];
+        var inpAdd2 = document.createElement("input");
+        inpAdd2.type = "date";
+        inpAdd2.id = "startEdit";
+        inpAdd2.classList = ["form-control"];
+        inpAdd2.value = row.find(".col-start").text().split("T")[0];
+        var d3Add = document.createElement("div");
+        d3Add.classList = ["col-sm-3"];
+        var inpAdd3 = document.createElement("input");
+        inpAdd3.type = "date";
+        inpAdd3.id = "endEdit";
+        inpAdd3.classList = ["form-control"];
+        inpAdd3.value = row.find(".col-end").text().split("T")[0];
+        var d4Add = document.createElement("div");
+        d4Add.classList = ["col-sm-2"];
+        var inpAdd4 = document.createElement("input");
+        inpAdd4.id = "placeEdit";
+        inpAdd4.classList = ["form-control"];
+        inpAdd4.value = row.find(".col-place").text();
+        var d5Add = document.createElement("div");
+        d5Add.classList = ["col-sm-2"];
+
+        var btnEdit = document.createElement("a");
+        btnEdit.dataset.id = id;
+        btnEdit.classList = ["btn btn-success btn-edit-save"];
+        btnEdit.innerText = "@ViewLocalizer["Zapisz"]";
+
+        var btnCancel = document.createElement("a");
+        btnCancel.classList = ["btn btn-danger btn-cancel"];
+        btnCancel.innerText = "@ViewLocalizer["Cancel"]";
+
+        row.append(d1Add);
+        row.append(d2Add);
+        row.append(d3Add);
+        row.append(d4Add);
+        row.append(d5Add);
+        d1Add.append(inpAdd1);
+        d2Add.append(inpAdd2);
+        d3Add.append(inpAdd3);
+        d4Add.append(inpAdd4);
+        d5Add.append(btnEdit);
+        d5Add.append(btnCancel);
+
+        var drError = document.createElement("div");
+        drError.classList = ["row text-danger d-none error-edit-item"];
+        var colError = document.createElement("div");
+        colError.classList = ["col-sm-12"];
+        colError.innerText = "@ViewLocalizer["Wrong data provided"]";
+
+        row.parent().append(drError);
+        drError.append(colError);
+
+        $(".btn-add").addClass("disabled");
+        $(".remove").addClass("disabled");
+        $(".edit").addClass("disabled");
+        $(".btn-info").removeAttr("href");
+
+        $(".btn-edit-save").on("click", function () {
+            var id = $(this).attr("data-id");
+            var name = $("#nameEdit").val();
+            var start = $("#startEdit").val();
+            var end = $("#endEdit").val();
+            var place = $("#placeEdit").val();
+
+            saveTrip(id, name, start, end, place);
+        });
+
+        $(".btn-cancel").on("click", function () {
+            getTrips();
+        });
+
+    }
+
+    function getTrips() {
+            $.ajax({
+            url: '@Url.Action("GetTrips", "Album")',
+            contentType: "application/json; charset=utf-8",
+               dataType: "json",
+               success: function (trips) {
+                   var ul = $(".list-group");
+                   ul.html("");
+
+                   for (var i in trips) {
+                       var trip = trips[i];
+
+                       var li = document.createElement("li");
+                       li.classList = ["list-group-item"];
+
+                       var dr = document.createElement("div");
+                       dr.id = "row_" + trip.id;
+                       dr.classList = ["row"];
+
+                       var d1 = document.createElement("div");
+                       d1.classList = ["col-sm-2 col-name"];
+                       d1.innerText = trip.name;
+                       var d2 = document.createElement("div");
+                       d2.classList = ["col-sm-3 col-start"];
+                       d2.innerText = trip.start.split("T")[0];
+                       var d3 = document.createElement("div");
+                       d3.classList = ["col-sm-3 col-end"];
+                       d3.innerText = trip.end.split("T")[0];
+                       var d4 = document.createElement("div");
+                       d4.classList = ["col-sm-1 col-place"];
+                       d4.innerText = trip.place;
+                       var d5 = document.createElement("div");
+                       d5.classList = ["col-sm-3"];
+
+
+                       var detailsBtn = document.createElement("a");
+                       detailsBtn.href = "Album/Details/" + trip.id;
+                       detailsBtn.classList = ["btn btn-info p-l-3"];
+                       detailsBtn.innerText = "@ViewLocalizer["Details"]";
+
+                       var editBtn = document.createElement("a");
+                       editBtn.dataset.id = trip.id;
+                       editBtn.classList = ["btn btn-primary edit p-l-3"];
+                       editBtn.innerText = "@ViewLocalizer["Edit"]";
+
+                       var deleteBtn = document.createElement("a");
+                       deleteBtn.classList = ["btn btn-danger remove p-l-3"];
+                       deleteBtn.innerText = "@ViewLocalizer["Delete"]";
+                       deleteBtn.dataset.id = trip.id;
+
+                       li.append(dr);
+                       dr.append(d1);
+                       dr.append(d2);
+                       dr.append(d3);
+                       dr.append(d4);
+                       dr.append(d5);
+                       d5.append(detailsBtn);
+                       d5.append(editBtn);
+                       d5.append(deleteBtn);
+                       ul.append(li);
+                   }
+
+
+
+                   var liAdd = document.createElement("li");
+                   liAdd.classList = ["list-group-item"];
+
+                   var drAdd = document.createElement("div");
+                   drAdd.classList = ["row"];
+
+                   var d1Add = document.createElement("div");
+                   d1Add.classList = ["col-sm-2"];
+                   var inpAdd1 = document.createElement("input");
+                   inpAdd1.id = "name";
+                   inpAdd1.classList = ["form-control"];
+                   var d2Add = document.createElement("div");
+                   d2Add.classList = ["col-sm-3"];
+                   var inpAdd2 = document.createElement("input");
+                   inpAdd2.type = "date";
+                   inpAdd2.id = "start";
+                   inpAdd2.classList = ["form-control"];
+                   var d3Add = document.createElement("div");
+                   d3Add.classList = ["col-sm-3"];
+                   var inpAdd3 = document.createElement("input");
+                   inpAdd3.type = "date";
+                   inpAdd3.id = "end";
+                   inpAdd3.classList = ["form-control"];
+                   var d4Add = document.createElement("div");
+                   d4Add.classList = ["col-sm-2"];
+                   var inpAdd4 = document.createElement("input");
+                   inpAdd4.id = "place";
+                   inpAdd4.classList = ["form-control"];
+                   var d5Add = document.createElement("div");
+                   d5Add.classList = ["col-sm-2"];
+
+                   var btnAdd = document.createElement("a");
+                   btnAdd.classList = ["btn btn-success btn-add"];
+                   btnAdd.innerText = "@ViewLocalizer["Add"]";
+
+                   liAdd.append(drAdd);
+                   drAdd.append(d1Add);
+                   drAdd.append(d2Add);
+                   drAdd.append(d3Add);
+                   drAdd.append(d4Add);
+                   drAdd.append(d5Add);
+                   d1Add.append(inpAdd1);
+                   d2Add.append(inpAdd2);
+                   d3Add.append(inpAdd3);
+                   d4Add.append(inpAdd4);
+                   d5Add.append(btnAdd);
+                   ul.append(liAdd);
+
+                   var liError = document.createElement("li");
+                   liError.classList = ["list-group-item text-danger d-none error-item"];
+                   var drError = document.createElement("div");
+                   drError.classList = ["row"];
+                   var colError = document.createElement("div");
+                   colError.classList = ["col-sm-12"];
+                   colError.innerText = "@ViewLocalizer["Wrong data provided"]";
+
+                   liError.append(drError);
+                   drError.append(colError);
+                   ul.append(liError);
+
+
+
+
+                   $(".remove").on("click", function () {
+                       var id = $(this).attr("data-id");
+                       removeTrip(id);
+                   });
+
+                   $(".btn-add").on("click", function () {
+                       var name = $("#name").val();
+                       var start = $("#start").val();
+                       var end = $("#end").val();
+                       var place = $("#place").val();
+
+                       addTrip(name,start,end,place);
+                   });
+
+                   $(".edit").on("click", function () {
+                       var id = $(this).attr("data-id");
+                       editTrip(id);
+                   });
+               }
+           });
+    }
+
+    $(document).ready(function () {
+        getTrips();
+    });
+
+
+
+</script>

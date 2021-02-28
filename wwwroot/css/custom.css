@@ -1,0 +1,19 @@
+﻿.carousel-inner {
+  height: 65vh;
+  width: 80vw; }
+
+.photo {
+  height: 100%;
+  width: 100%;
+  object-fit: contain; }
+
+.img-mini {
+  width: 5vh;
+  height: 5vh; }
+
+a.btn {
+  margin-right: 5px;
+  color: white !important; }
+
+h2 {
+  text-align: center; }

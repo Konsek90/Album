@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer ViewLocalizer
+
+@{
+    ViewData["Title"] = ViewLocalizer["Contact"];
+}
+<h2>@ViewData["Title"]</h2>
+
+<address>
+    <abbr title="@ViewLocalizer["Adress"]">@ViewLocalizer["Adress"]:</abbr>
+    Web Solutions<br />
+    Kraków Chłodna 104 30-444 <br />
+    <abbr title="@ViewLocalizer["Phone"]">@ViewLocalizer["Phone"]:</abbr>
+    122224388
+</address>
+
+<address>
+    <strong>@ViewLocalizer["Support"]:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
+</address>

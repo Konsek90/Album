@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer ViewLocalizer
+
+@{
+    ViewData["Title"] = @ViewLocalizer["Home page"];
+}
+
+<h2>
+    @ViewData["Title"]
+</h2>
+
+<div class="card">
+    <div class="card-body">
+        @ViewLocalizer["Our application contains list of trips from the past and galleries of photos for each trip."]
+    </div>
+</div>

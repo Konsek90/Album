@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+
+@model Album.Models.Trip
+
+@inject IViewLocalizer ViewLocalizer
+
+
+@{
+    ViewData["Title"] = ViewLocalizer["Trip details"];
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row pb-sm-1">
+    <div class="col-sm-3 font-weight-bold">
+        @Model.Name
+    </div>
+    <div class="col-sm-3 font-weight-bold">
+        @Model.Start
+    </div>
+    <div class="col-sm-3 font-weight-bold">
+        @Model.End
+    </div>
+    <div class="col-sm-3 font-weight-bold">
+        @Model.Place
+    </div>
+</div>
+
+@if (Model.Photos != null)
+{
+    <div class="row pb-sm-4">
+        <div class="col-sm-10 offset-1">
+            <div id="demo" class="carousel slide" data-ride="carousel">
+                <ul class="carousel-indicators">
+                    @{ int i = 0; }
+                    @foreach (var p in Model.Photos)
+                    {
+                        <li data-target="#demo" data-slide-to="@i++" @if (p == Model.Photos.First()) { <text> class="active" </text> } )></li>
+
+                    }
+                </ul>
+                <div class="carousel-inner">
+                    @foreach (var p in Model.Photos)
+                    {
+                        <div class="carousel-item @if (p == Model.Photos.First()) { <text> active </text> }">
+                            <img class="photo" src="~/photos/@Model.Id/@p" alt="photo">
+                        </div>
+                    }
+                </div>
+                <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </a>
+                <a class="carousel-control-next" href="#demo" data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pb-sm-4">
+        @foreach (var p in Model.Photos)
+        {
+            <div class="col-sm-1">
+                @using (Html.BeginForm("DeletePhoto", "Album", FormMethod.Post))
+                {
+                    @Html.Hidden("Idwycieczka", Model.Id)
+                    @Html.Hidden("PhotoName", p)
+
+                    <button type="submit" class="btn btn-danger close" data-toggle="tooltip" title="@ViewLocalizer["Delete"]">
+                        &times;
+                        <img class="img-responsive img-mini" src="~/photos/@Model.Id/@p" />
+                    </button>
+
+                }
+            </div>
+        }
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @using (Html.BeginForm("UploadPhoto", "Album", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.Hidden("WycieczkaId", Model.Id)
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <input type="file" name="Photo" class="pb-sm-2" />
+                        <button type="submit" class="btn-success form-control">@ViewLocalizer["Add"]</button>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("[data-toggle='tooltip']").tooltip();
+    });
+</script>
