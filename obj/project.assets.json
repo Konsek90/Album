@@ -12645,11 +12645,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\E7470\\Desktop\\Album\\Album\\Album.csproj",
+      "projectUniqueName": "C:\\Users\\E7470\\Documents\\GitHub\\2\\ASP.NET Projekt\\Album\\Album.csproj",
       "projectName": "Album",
-      "projectPath": "C:\\Users\\E7470\\Desktop\\Album\\Album\\Album.csproj",
+      "projectPath": "C:\\Users\\E7470\\Documents\\GitHub\\2\\ASP.NET Projekt\\Album\\Album.csproj",
       "packagesPath": "C:\\Users\\E7470\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\E7470\\Desktop\\Album\\Album\\obj\\",
+      "outputPath": "C:\\Users\\E7470\\Documents\\GitHub\\2\\ASP.NET Projekt\\Album\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
