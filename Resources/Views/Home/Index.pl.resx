@@ -120,7 +120,7 @@
   <data name="Home page" xml:space="preserve">
     <value>Strona główna</value>
   </data>
-  <data name="Our application contains list of trips from the past and galleries of photos for each trip." xml:space="preserve">
+  <data name="My application contains list of trips from the past and galleries of photos for each trip." xml:space="preserve">
     <value>Moja aplikacja zawierająca listę wycieczek z przeszłości wraz z galerią zdjęć dla każdej z nich.</value>
   </data>
 </root>
